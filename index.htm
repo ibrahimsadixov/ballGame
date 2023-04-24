@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            #game { margin: 50px auto; border: 1px solid #333; box-shadow: 0 0 10px #333;  position: relative;}
+            #game > * {position: absolute;}
+        </style>
+    </head>
+    <body>
+        <div id="score"></div>
+        <div id="game">
+            <div id="ball"></div>
+            <div id="bar"></div>
+        </div>
+
+        <script>
+
+            const game = {
+                name: 'game',
+                width: 800,
+                height: 600, 
+                color: 'white',
+                elem: null,
+                show() {
+                    this.elem = document.getElementById(this.name)
+                    this.elem.style.width = this.width + 'px'
+                    this.elem.style.height = this.height + 'px'
+                    this.elem.style.background = this.color
+                }
+            }
+            
+            const ball = {
+                name: 'ball',
+                width: 30,
+                height: 30, 
+                radius: 50, 
+                color: 'red',
+                x: 0,
+                y: 0,
+                dx: 8,
+                dy: 8,
+                score:0,
+                elem: null,
+                restart() {
+    this.score = 0;
+    this.x = 0;
+    this.y = 0;
+    this.show();
+  },
+                show() {
+                    const scoreTable = document.getElementById("score")
+                    scoreTable.innerHTML="Score: "+this.score
+                    this.elem = document.getElementById(this.name)
+                    this.elem.style.width = this.width + 'px'
+                    this.elem.style.height = this.height + 'px'
+                    this.elem.style.background = this.color
+                    this.elem.style.borderRadius = this.radius + '%'
+                    this.elem.style.left = this.x + 'px'
+                    this.elem.style.top = this.y + 'px'
+                },
+                move() {
+                    if(this.x < 0 || this.x >= game.width - this.width) this.dx *= -1
+                    if(this.y < 0 || this.y >= game.height - this.height) this.dy *= -1; 
+                    this.x += this.dx
+                    this.y += this.dy
+                    this.show()
+                    if (this.y + this.height >= bar.y && this.x + this.width >= bar.x && this.x <= bar.x + bar.width) {
+    this.dy *= -1;
+    this.score++;
+}
+if (this.y >= game.height - this.height) {
+
+    this.score--;
+}
+if (this.score < 0) {
+  
+    alert("Game Over!");
+    ball.restart();
+}
+
+                }
+            }
+
+            const bar = {
+                name: 'bar',
+                width: 200,
+                height: 10, 
+                color: 'blue',
+                x: 0,
+                y: 0,
+                dx: 5,
+                elem: null,
+                show() {
+                    this.y = game.height - this.height,
+                    this.elem = document.getElementById(this.name)
+                    this.elem.style.width = this.width + 'px'
+                    this.elem.style.height = this.height + 'px'
+                    this.elem.style.background = this.color
+                    this.elem.style.left = this.x + 'px'
+                    this.elem.style.top = this.y + 'px'
+                },
+                move(e) {
+                    if(e.keyCode == 39 && this.x < game.width - this.width) this.x += 20
+                    if(e.keyCode == 37 && this.x > 0 ) this.x -= 20                
+                    this.show()
+                }
+            }
+
+            window.addEventListener('load', () => {
+  // ...
+  // Add an event listener to the alert "OK" button
+  window.alert = (msg) => {
+    return new Promise((resolve) => {
+      const result = window.confirm(msg);
+      if (result) {
+        ball.restart(); // Call the restart() method when "OK" is clicked
+      }
+      resolve(result);
+    });
+  };
+  // ...
+});
+
+            game.show()
+            bar.show()
+            setInterval( function() { ball.move() } , 40)
+            document.onkeydown = function(e) { bar.move(e) }
+        </script>
+    </body>
+</html>
